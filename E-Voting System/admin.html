@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>E-Voting System - Admin Panel</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+  body {
+    margin: 0; padding: 0; font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #e0e0e0;
+    display: flex; justify-content: center; align-items: center; min-height: 100vh;
+  }
+  .container {
+    width: 480px;
+    background: rgba(20, 20, 30, 0.95);
+    border-radius: 20px;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 8px 30px rgba(0, 255, 255, 0.3);
+    text-align: center;
+  }
+  h1 {
+    margin-bottom: 2rem;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: #00f0ff;
+    text-shadow: 0 0 15px #00f0ff;
+  }
+  label {
+    font-weight: 600;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #00d8ff;
+    text-align: left;
+  }
+  input, button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    outline: none;
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+    background: #022f44;
+    color: #00e5ff;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  input:focus {
+    background: #005f87;
+    box-shadow: 0 0 20px #00e5ff;
+  }
+  button {
+    cursor: pointer;
+    font-weight: 700;
+    background: linear-gradient(45deg, #00f0ff, #00c8d8);
+    color: #002f3d;
+    box-shadow: 0 0 20px #00f0ff;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: background 0.4s ease, box-shadow 0.4s ease;
+  }
+  button:hover {
+    background: linear-gradient(45deg, #00c8d8, #00f0ff);
+    box-shadow: 0 0 30px #00ffff;
+  }
+  ul.candidates {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.candidates li {
+    background: #00475e;
+    margin: 0.6rem 0;
+    padding: 1rem 1.2rem;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 15px #00f0ff;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #00e5ff;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Admin Panel</h1>
+  <form id="addCandidateForm">
+    <label for="candidateName">Add Candidate:</label>
+    <input type="text" id="candidateName" placeholder="Candidate Name" required />
+    <button type="submit">Add Candidate</button>
+  </form>
+  <h2>Election Results</h2>
+  <ul class="candidates" id="resultsList"></ul>
+  <h2>Voter List</h2>
+  <form id="addVoterForm">
+    <label for="voterId">Add Voter ID:</label>
+    <input type="text" id="voterIdInput" placeholder="Voter ID" required />
+    <label for="aadhaar">Aadhaar Number:</label>
+    <input type="text" id="aadhaarInput" placeholder="Aadhaar Number" required />
+    <button type="submit">Add Voter</button>
+  </form>
+  <ul id="voterList"></ul>
+</div>
+<script>
+  const resultsList = document.getElementById('resultsList');
+  const addCandidateForm = document.getElementById('addCandidateForm');
+  const candidateNameInput = document.getElementById('candidateName');
+  const addVoterForm = document.getElementById('addVoterForm');
+  const voterIdInput = document.getElementById('voterIdInput');
+  const aadhaarInput = document.getElementById('aadhaarInput');
+  const voterList = document.getElementById('voterList');
+
+  // Load candidates, votes, and voters from localStorage
+  let candidates = JSON.parse(localStorage.getItem('candidates')) || ['Alice', 'Bob', 'Charlie'];
+  let votes = JSON.parse(localStorage.getItem('votes')) || {};
+  let voters = JSON.parse(localStorage.getItem('voters')) || [];
+
+  function renderResults() {
+    resultsList.innerHTML = '';
+    candidates.forEach(c => {
+      const li = document.createElement('li');
+      li.textContent = `${c}: ${votes[c] || 0} votes`;
+      resultsList.appendChild(li);
+    });
+  }
+
+  function renderVoters() {
+    voterList.innerHTML = '';
+    voters.forEach(v => {
+      const li = document.createElement('li');
+      li.textContent = `Voter ID: ${v.voterId}, Aadhaar: ${v.aadhaar}, Voted: ${v.voted ? 'Yes' : 'No'}`;
+      voterList.appendChild(li);
+    });
+  }
+
+  addCandidateForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = candidateNameInput.value.trim();
+    if (name && !candidates.includes(name)) {
+      candidates.push(name);
+      localStorage.setItem('candidates', JSON.stringify(candidates));
+      candidateNameInput.value = '';
+      renderResults();
+    }
+  });
+
+  addVoterForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const voterId = voterIdInput.value.trim();
+    const aadhaar = aadhaarInput.value.trim();
+    if (!voterId || !aadhaar) {
+      alert('Please enter both Voter ID and Aadhaar number.');
+      return;
+    }
+    if (voters.some(v => v.voterId === voterId)) {
+      alert('This Voter ID already exists.');
+      return;
+    }
+    voters.push({ voterId, aadhaar, voted: false });
+    localStorage.setItem('voters', JSON.stringify(voters));
+    voterIdInput.value = '';
+    aadhaarInput.value = '';
+    renderVoters();
+  });
+
+  renderResults();
+  renderVoters();
+</script>
+</body>
+</html>

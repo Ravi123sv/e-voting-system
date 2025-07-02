@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>E-Voting System - OTP Verification</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+  body {
+    margin: 0; padding: 0; font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #e0e0e0;
+    display: flex; justify-content: center; align-items: center; height: 100vh;
+  }
+  .container {
+    width: 360px;
+    background: rgba(20, 20, 30, 0.95);
+    border-radius: 20px;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 8px 30px rgba(0, 255, 255, 0.3);
+    text-align: center;
+  }
+  h1 {
+    margin-bottom: 2rem;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: #00f0ff;
+    text-shadow: 0 0 15px #00f0ff;
+  }
+  label {
+    font-weight: 600;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #00d8ff;
+    text-align: left;
+  }
+  input, button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    outline: none;s
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+    background: #022f44;
+    color: #00e5ff;
+    transition: background 0.5s ease, box-shadow 0.3s ease;
+  }
+  input:focus {
+    background: #005f87;
+    box-shadow: 0 0 20px #00e5ff;
+  }
+  button {
+    cursor: pointer;
+    font-weight: 700;
+    background: linear-gradient(45deg, #00f0ff, #00c8d8);
+    color: #002f3d;
+    box-shadow: 0 0 20px #00f0ff;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: background 0.6s ease, box-shadow 0.4s ease;
+  }
+  button:hover {
+    background: linear-gradient(45deg, #00c8d8, #00f0ff);
+    box-shadow: 0 0 30px #00ffff;
+  }
+  .message {
+    color: #ff6666;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>OTP Verification</h1>
+  <form id="otpForm" action="candidates.html" method="GET">
+    <label for="otpInput">Enter OTP:</label>
+    <input type="text" id="otpInput" name="otp" placeholder="One-Time Password" maxlength="6" required />
+    <div class="message" id="errorMsg"></div>
+    <input type="hidden" id="voterId" name="voterId" />
+    <button type="submit">Verify OTP</button>
+  </form>
+</div>
+<script>
+  // Simulated OTP storage (in real app, this would be server-side)
+  const urlParams = new URLSearchParams(window.location.search);
+  const voterId = urlParams.get('voterId');
+  const storedOtps = {
+    "voter1": "123456",
+    "voter2": "654321",
+    "voter3": "111222",
+    "voter4": "222333",
+    "voter5": "333444",
+    "voter6": "444555",
+    "voter7": "555666",
+    "voter8": "666777",
+    "voter9": "777888",
+    "voter10": "888999",
+    "voter11": "999000"
+  };
+  document.getElementById('voterId').value = voterId || '';
+
+  const otpForm = document.getElementById('otpForm');
+  const errorMsg = document.getElementById('errorMsg');
+
+  otpForm.addEventListener('submit', function(e) {
+    const otpInput = document.getElementById('otpInput').value.trim();
+    if (!voterId || !storedOtps[voterId] || otpInput !== storedOtps[voterId]) {
+      e.preventDefault();
+      errorMsg.textContent = 'Invalid OTP or Voter ID';
+    }
+  });
+</script>
+</body>
+</html>

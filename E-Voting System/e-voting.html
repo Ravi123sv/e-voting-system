@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>E-Voting System</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+  body {
+    margin: 0; padding: 0; font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #e0e0e0;
+    perspective: 1400px;
+    overflow-x: hidden;
+    display: flex; justify-content: center; align-items: center; height: 100vh;
+     
+  }
+  .container {
+    max-width: 480px;
+    margin: 3rem auto;
+    background: rgba(20, 20, 30, 0.95);
+    border-radius: 20px;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 8px 30px rgba(0, 255, 255, 0.3);
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: #00f0ff;
+    text-shadow: 0 0 15px #00f0ff;
+  }
+  label {
+    font-weight: 600;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #00d8ff;
+  }
+  input, button, select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    outline: none;
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+    background: #022f44;
+    color: #00e5ff;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  input:focus, select:focus {
+    background: #005f87;
+    box-shadow: 0 0 20px #00e5ff;
+  }
+  button {
+    cursor: pointer;
+    font-weight: 700;
+    background: linear-gradient(45deg, #00f0ff, #00c8d8);
+    color: #002f3d;
+    box-shadow: 0 0 20px #00f0ff;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: background 0.4s ease, box-shadow 0.4s ease;
+  }
+  button:hover {
+    background: linear-gradient(45deg, #00c8d8, #00f0ff);
+    box-shadow: 0 0 30px #00ffff;
+  }
+  .hidden {
+    display: none;
+  }
+  ul.candidates {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.candidates li {
+    background: #00475e;
+    margin: 0.6rem 0;
+    padding: 1rem 1.2rem;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 15px #00f0ff;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #00e5ff;
+  }
+  ul.candidates li:hover {
+    transform: rotateY(20deg) scale(1.07);
+    box-shadow: 0 0 30px #00ffff;
+  }
+  .admin-section {
+    margin-top: 3rem;
+    border-top: 1px solid #00f0ff;
+    padding-top: 1.5rem;
+  }
+  .admin-section h3 {
+    color: #00d8ff;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    text-align: center;
+    text-shadow: 0 0 10px #00c8d8;
+  }
+  .message {
+    text-align: center;
+    font-weight: 700;
+    margin: 1.2rem 0;
+    color: #00e5ff;
+    text-shadow: 0 0 12px #00f0ff;
+  }
+  .page {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+  }
+  .page-enter {
+    transform: rotateY(90deg);
+    opacity: 0;
+  }
+  .page-enter-active {
+    transform: rotateY(0deg);
+    opacity: 1;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+  }
+  .page-exit {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+  .page-exit-active {
+    transform: rotateY(-90deg);
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+  }
+</style>
+</head>
+<body>
+<div class="container" id="app">
+  <h1>E-Voting System</h1>
+
+  <div id="login-page" class="page">
+    <label for="voterId">Enter Voter ID:</label>
+    <input type="text" id="voterId" placeholder="Voter ID" />
+    <button id="loginBtn">Get OTP</button>
+  </div>
+
+  <div id="otp-page" class="page hidden">
+    <label for="otpInput">Enter OTP:</label>
+    <input type="text" id="otpInput" placeholder="One-Time Password" maxlength="6" />
+    <button id="verifyOtpBtn">Verify OTP</button>
+    <div class="message" id="otpMessage"></div>
+  </div>
+
+  <div id="candidate-page" class="page hidden">
+    <h2>Select Candidate</h2>
+    <ul class="candidates" id="candidateList"></ul>
+  </div>
+
+  <div id="vote-confirmation" class="page hidden">
+    <h2>Thank you for voting!</h2>
+    <p>Your vote has been recorded successfully.</p>
+  </div>
+
+  <div class="admin-section">
+    <h3>Admin Panel</h3>
+    <label for="candidateName">Add Candidate:</label>
+    <input type="text" id="candidateName" placeholder="Candidate Name" />
+    <button id="addCandidateBtn">Add Candidate</button>
+
+    <h3>Election Results</h3>
+    <ul class="candidates" id="resultsList"></ul>
+  </div>
+</div>
+
+<script>
+  const app = document.getElementById('app');
+  const loginPage = document.getElementById('login-page');
+  const otpPage = document.getElementById('otp-page');
+  const candidatePage = document.getElementById('candidate-page');
+  const voteConfirmation = document.getElementById('vote-confirmation');
+  const voterIdInput = document.getElementById('voterId');
+  const loginBtn = document.getElementById('loginBtn');
+  const otpInput = document.getElementById('otpInput');
+  const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+  const otpMessage = document.getElementById('otpMessage');
+  const candidateList = document.getElementById('candidateList');
+  const candidateNameInput = document.getElementById('candidateName');
+  const addCandidateBtn = document.getElementById('addCandidateBtn');
+  const resultsList = document.getElementById('resultsList');
+
+  // Simulated database
+  const voters = {
+    "voter1": "1234567890",
+    "voter2": "0987654321",
+    "voter3": "5555555555"
+  };
+
+  let currentVoter = null;
+  let currentOtp = null;
+  let candidates = ['Alice', 'Bob', 'Charlie'];
+  let votes = {};
+
+  function showPage(page) {
+    [loginPage, otpPage, candidatePage, voteConfirmation].forEachp => p.classList.add('hidden'));
+    page.classList.remove('hidden');
+  }
+
+  function generateOtp() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
+  loginBtn.onclick = () => {
+    const voterId = voterIdInput.value.trim();
+    if (!voterId || !voters[voterId]) {
+      alert('Invalid Voter ID');
+      return;
+    }
+    currentVoter = voterId;
+    currentOtp = generateOtp();
+    alert(`OTP sent to registered mobile number: ${voters[voterId]} (Simulated OTP: ${currentOtp})`);
+    showPage(otpPage);
+  };
+
+  verifyOtpBtn.onclick = () => {
+    if (otpInput.value.trim() === currentOtp) {
+      otpMessage.textContent = '';
+      showPage(candidatePage);
+      renderCandidates();
+    } else {
+      otpMessage.textContent = 'Invalid OTP. Please try again.';
+    }
+  };
+
+  function renderCandidates() {
+    candidateList.innerHTML = '';
+    candidates.forEach((c) => {
+      const li = document.createElement('li');
+      li.textContent = c;
+      const voteBtn = document.createElement('button');
+      voteBtn.textContent = 'Vote';
+      voteBtn.onclick = () => {
+        votes[c] = (votes[c] || 0) + 1;
+        alert(`You voted for ${c}`);
+        showPage(voteConfirmation);
+        renderResults();
+      };
+      li.appendChild(voteBtn);
+      candidateList.appendChild(li);
+    });
+  }
+
+  addCandidateBtn.onclick = () => {
+    const name = candidateNameInput.value.trim();
+    if (name && !candidates.includes(name)) {
+      candidates.push(name);
+      candidateNameInput.value = '';
+      renderCandidates();
+      renderResults();
+    }
+  };
+
+  function renderResults() {
+    resultsList.innerHTML = '';
+    candidates.forEach(c => {
+      const li = document.createElement('li');
+      li.textContent = `${c}: ${votes[c] || 0} votes`;
+      resultsList.appendChild(li);
+    });
+  }
+
+  renderCandidates();
+  renderResults();
+</script>
+</body>
+</html>

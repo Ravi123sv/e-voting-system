@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Travel Booking</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f8fb;
+    }
+    header {
+      background: #0077cc;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    .hero {
+      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center/cover;
+      color: white;
+      height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+    .search-box {
+      background: white;
+      margin-top: -50px;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+    .search-box input, .search-box button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    .search-box button {
+      background: #0077cc;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .recommendations {
+      padding: 2rem;
+      text-align: center;
+    }
+    .location {
+      display: inline-block;
+      margin: 1rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 200px;
+    }
+    .success-message {
+      text-align: center;
+      padding: 1rem;
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: 8px;
+      margin: 1rem auto;
+      max-width: 500px;
+      display: none;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #eee;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>Smart Travel</h2>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Flights</a>
+      <a href="#">Hotels</a>
+      <a href="#">Bookings</a>
+      <a href="#">Profile</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Plan Your Trip Smartly</h1>
+    <p>Search flights, hotels, and packages instantly.</p>
+  </section>
+
+  <div class="search-box">
+    <input type="text" id="destination" placeholder="Enter Destination" />
+    <input type="date" id="travelDate" />
+    <button onclick="search()">Search</button>
+  </div>
+
+  <section class="recommendations" id="results">
+    <h2>Recommended Destinations</h2>
+    <div id="locations">
+      <!-- JS will fill this -->
+    </div>
+  </section>
+
+  <div class="success-message" id="successMsg">
+    ✅ Booking Confirmed! Have a safe and pleasant journey.
+  </div>
+
+  <footer>
+    &copy; 2025 Smart Travel. All rights reserved.
+  </footer>
+
+  <script>
+    const data = [
+      { name: "Paris", image: "https://source.unsplash.com/200x150/?paris" },
+      { name: "Tokyo", image: "https://source.unsplash.com/200x150/?tokyo" },
+      { name: "New York", image: "https://source.unsplash.com/200x150/?newyork" },
+      { name: "Rome", image: "https://source.unsplash.com/200x150/?rome" },
+    ];
+
+    function search() {
+      const dest = document.getElementById("destination").value;
+      const date = document.getElementById("travelDate").value;
+      const successMsg = document.getElementById("successMsg");
+      const locationDiv = document.getElementById('locations');
+      locationDiv.innerHTML = '';
+      successMsg.style.display = "none";
+
+      if (!dest || !date) {
+        alert("Please enter destination and date.");
+        return;
+      }
+
+      data.forEach(loc => {
+        locationDiv.innerHTML += `
+          <div class="location">
+            <img src="${loc.image}" style="width:100%; border-radius:8px;">
+            <h4>${loc.name}</h4>
+            <button onclick="bookNow('${loc.name}')">Book Now</button>
+          </div>`;
+      });
+    }
+
+    function bookNow(locationName) {
+      const successMsg = document.getElementById("successMsg");
+      successMsg.innerText = `✅ Booking to ${locationName} confirmed! Have a great trip.`;
+      successMsg.style.display = "block";
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+  </script>
+</body>
+</html>

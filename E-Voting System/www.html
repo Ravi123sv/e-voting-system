@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name ="viewport" content="width=device-width, initial-scale=1" />
+    <title>E-Voting System - User Login</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #d4e3e9, #d7dadc, #ededed);
+            color: #dd1c1c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 480px;
+            background: rgba(20, 20, 30, 0.95);
+            border-radius: 20px;
+            padding: 2.5rem 3rem;
+            box-shadow: 0 8px 30px rgba(0, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 2rem;
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: #00f0ff;
+            text-shadow: 0 0 15px #00f0ff;
+        }
+        label {
+            font-weight: 600;
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 0.5rem;pip install tabby
+
+            
+            color: #00d8ff;
+            text-align: left;
+        }
+        input, button {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.25rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            outline: none;
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+            background: #022f44;
+            color: #00e5ff;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+          
+        input:focus {
+            background: #005f87;
+            box-shadow: 0 0 20px #00e5ff;
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00f0ff, #00c8d8);
+            color: #002f3d;
+            box-shadow: 0 0 20px #00f0ff;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: background 0.4s ease, box-shadow 0.4s ease;
+        }
+        button:hover {
+            background: linear-gradient(45deg, #00c8d8, #00f0ff);
+            box-shadow: 0 0 30px #00ffff;
+        }
+        ul.candidates {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        ul.candidates li {
+            background: #00475e;
+            margin: 0.6rem 0;
+            padding: 1rem 1.2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        ul.candidates li:hover {
+            background: #005f87;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+        ul.candidates li span {
+            display: block;
+            font-weight: 600;
+            color: #00e5ff;
+        }
+        ul.candidates li button {
+            background: #00f0ff;
+            color: #002f3d;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        ul.candidates li button:hover {
+            background: #00c8d8;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+        ul.candidates li button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        ul.candidates li button:disabled:hover {
+            background: #555;
+            box-shadow: none;
+        }
+        ul.candidates li button:disabled span {
+            color: #888;
+        }
+        ul.candidates li button span {
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        ul.candidates li button i {
+            font-size: 1.2rem;
+            color: #00e5ff;
+        }
+        ul.candidates li button i.fa-check {
+            color: #00ff00;
+        }
+        ul.candidates li button i.fa-times {
+            color: #ff0000;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+                padding: 2rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            input, button {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+ 
+<body>
+    <div class="container">
+        <h1>E-Voting System</h1>
+        <form id="loginForm">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required />
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required />
+            <button type="submit">Login</button>
+        </form>
+        <ul class="candidates">
+            <!-- Candidates will be dynamically populated here -->
+        </ul>
+    </div>
+    <script src="script.js"></script>
+    

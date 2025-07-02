@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>E-Voting System - Candidates</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+  body {
+    margin: 0; padding: 0; font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #e0e0e0;
+    display: flex; justify-content: center; align-items: center; min-height: 100vh;
+  }
+  .container {
+    width: 480px;
+    background: rgba(20, 20, 30, 0.95);
+    border-radius: 20px;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 8px 30px rgba(0, 255, 255, 0.3);
+    text-align: center;
+  }
+  h1 {
+    margin-bottom: 2rem;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: #00f0ff;
+    text-shadow: 0 0 15px #00f0ff;
+  }
+  ul.candidates {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.candidates li {
+    background: #00475e;
+    margin: 0.6rem 0;
+    padding: 1rem 1.2rem;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 15px #00f0ff;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #00e5ff;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  ul.candidates li:hover {
+    transform: rotateY(20deg) scale(1.07);
+    box-shadow: 0 0 30px #00ffff;
+  }
+  button.vote-btn {
+    background: linear-gradient(45deg, #00f0ff, #00c8d8);
+    border: none;
+    border-radius: 12px;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    color: #002f3d;
+    box-shadow: 0 0 20px #00f0ff;
+    cursor: pointer;
+    transition: background 0.4s ease, box-shadow 0.4s ease;
+  }
+  button.vote-btn:hover {
+    background: linear-gradient(45deg, #00c8d8, #00f0ff);
+    box-shadow: 0 0 30px #00ffff;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Select Candidate</h1>
+  <ul class="candidates" id="candidateList"></ul>
+</div>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const voterId = urlParams.get('voterId');
+  if (!voterId) {
+    alert('Voter ID missing. Redirecting to login.');
+    window.location.href = 'index.html';
+  }
+
+  // Check if voter has already voted
+  let votedVoters = JSON.parse(localStorage.getItem('votedVoters') || '[]');
+  if (votedVoters.includes(voterId)) {
+    alert('You have already voted. Thank you!');
+    window.location.href = 'confirmation.html?voterId=' + encodeURIComponent(voterId);
+  }
+
+  const candidates = ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank'];
+  const candidateList = document.getElementById('candidateList');
+
+  function vote(candidate) {
+    // Check if voter has already voted
+    let votedVoters = JSON.parse(localStorage.getItem('votedVoters') || '[]');
+    if (votedVoters.includes(voterId)) {
+      alert('You have already voted. Thank you!');
+      return;
+    }
+    alert(`You voted for ${candidate}`);
+    // Store vote in localStorage (simulate backend)
+    let votes = JSON.parse(localStorage.getItem('votes') || '{}');
+    votes[candidate] = (votes[candidate] || 0) + 1;
+    localStorage.setItem('votes', JSON.stringify(votes));
+    // Mark voter as voted
+    votedVoters.push(voterId);
+    localStorage.setItem('votedVoters', JSON.stringify(votedVoters));
+
+    // Update voter voted status in voters list
+    let voters = JSON.parse(localStorage.getItem('voters') || '[]');
+    let voterIndex = voters.findIndex(v => v.voterId === voterId);
+    if (voterIndex !== -1) {
+      voters[voterIndex].voted = true;
+      localStorage.setItem('voters', JSON.stringify(voters));
+    }
+
+    // Redirect to confirmation page
+    window.location.href = `confirmation.html?voterId=${encodeURIComponent(voterId)}`;
+  }
+
+  candidates.forEach(c => {
+    const li = document.createElement('li');
+    li.textContent = c;
+    const btn = document.createElement('button');
+    btn.textContent = 'Vote';
+    btn.className = 'vote-btn';
+    btn.onclick = () => vote(c);
+    li.appendChild(btn);
+    candidateList.appendChild(li);
+  });
+
+  // Add voterId validation to redirect to login if missing or invalid
+  if (!voterId || !["123456", "654321", "111222", "222333", "333444", "444555"].includes(voterId)) {
+    alert('Invalid or missing Voter ID. Redirecting to login.');
+    window.location.href = 'index.html';
+  }
+</script>
+</body>
+</html>
